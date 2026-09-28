@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlanBack — Produktionsplanung für Großbäckereien</title>
+<meta name="description" content="PlanBack erstellt aus offenen Bedarfen einen vollständigen, optimierten Produktionsplan für Großbäckereien mit vielen Filialen: Chargen, Arbeitspläne, Kampagnen, Terminierung.">
+<meta property="og:title" content="PlanBack — Pläne, die aufgehen">
+<meta property="og:description" content="Produktionsplanung für Großbäckereien: aus offenen Bedarfen wird ein optimierter, freigegebener Produktionsplan.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="/assets/logo/icon.png">
+<link rel="stylesheet" href="assets/page.css">
+<style>
+  main.home{max-width:none;padding:0}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  .hero{background:linear-gradient(180deg,var(--bg-soft) 0%,#fff 100%);padding:72px 0 64px}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+  .hero .claim{display:inline-block;background:var(--teal-soft);color:var(--green);font-weight:600;font-size:.85rem;padding:6px 14px;border-radius:999px;margin-bottom:18px}
+  .hero h1{font-size:2.6rem;margin-bottom:16px}
+  .hero p{font-size:1.15rem;color:var(--muted);max-width:34rem;margin-bottom:26px}
+  .hero .actions{display:flex;gap:12px;flex-wrap:wrap}
+  .gantt{width:100%;height:auto;display:block;border-radius:14px;box-shadow:0 12px 40px rgba(18,71,55,.12);background:#fff}
+  section{padding:64px 0}
+  section.soft{background:var(--bg-soft)}
+  section h2{font-size:1.75rem;margin:0 0 8px}
+  section .lead{color:var(--muted);font-size:1.05rem;max-width:40rem;margin-bottom:34px}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px}
+  .card .ico{width:40px;height:40px;border-radius:10px;background:var(--teal-soft);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+  .card h3{margin:0 0 6px;font-size:1.05rem}
+  .card p{margin:0;color:var(--text);font-size:.95rem}
+  .steps{counter-reset:step;display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+  .step{position:relative;background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 18px 18px}
+  .step::before{counter-increment:step;content:counter(step);display:inline-flex;width:30px;height:30px;border-radius:50%;background:var(--green);color:#fff;font-weight:700;font-size:.9rem;align-items:center;justify-content:center;margin-bottom:12px}
+  .step h3{margin:0 0 4px;font-size:1rem}
+  .step p{margin:0;font-size:.92rem}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+  .split ul{list-style:none;padding:0}
+  .split li{padding:10px 0 10px 30px;border-bottom:1px solid var(--line);position:relative}
+  .split li::before{content:"";position:absolute;left:4px;top:17px;width:12px;height:12px;border-radius:50%;background:var(--gold)}
+  .contact{background:var(--green);color:#fff}
+  .contact h2,.contact p{color:#fff}
+  .contact .lead{color:#CFE3DB}
+  .contact .btn{background:var(--gold);color:var(--ink)}
+  .contact .btn:hover{background:#F7B45C;color:var(--ink)}
+  @media (max-width:900px){.hero .wrap{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr 1fr}.split{grid-template-columns:1fr}}
+  @media (max-width:560px){.hero{padding:48px 0 40px}.hero h1{font-size:1.9rem}.grid,.steps{grid-template-columns:1fr}section{padding:48px 0}.wrap{padding:0 16px}}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <a class="logo" href="/" aria-label="PlanBack"><img src="/assets/logo/planback.png" alt="PlanBack — Pläne, die aufgehen" width="959" height="308"></a>
+  <nav><a href="#nutzen">Nutzen</a><a href="#ablauf">So funktioniert es</a><a href="#kontakt">Kontakt</a></nav>
+</div></header>
+<main class="home">
+
+<div class="hero"><div class="wrap">
+  <div>
+    <span class="claim">Pläne, die aufgehen</span>
+    <h1>Produktionsplanung für Großbäckereien</h1>
+    <p>PlanBack erstellt aus offenen Bedarfen einen vollständigen, optimierten Produktionsplan: Chargen, Arbeitspläne, Kampagnen und die Terminierung auf Knetern, Öfen und Linien. Für Bäckereien mit vielen Filialen und mehreren Planungsbereichen.</p>
+    <div class="actions"><a class="btn" href="#kontakt">Gespräch vereinbaren</a><a class="btn secondary" href="#ablauf">So funktioniert es</a></div>
+  </div>
+  <svg class="gantt" viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schematischer Gantt-Plan: Vorgänge auf Kneter, Pufferplatz, Aufarbeitung und Ofen">
+    <rect width="520" height="300" rx="14" fill="#fff"/>
+    <g font-family="Inter,Arial,sans-serif" font-size="12" fill="#5E6B67">
+      <text x="24" y="40">Kneter 1</text><text x="24" y="90">Kneter 2</text><text x="24" y="140">Pufferplatz</text><text x="24" y="190">Aufarbeitung</text><text x="24" y="240">Ofen 1</text><text x="24" y="290" font-size="11">Ofen 2</text>
+    </g>
+    <g stroke="#E3E8E6" stroke-width="1"><line x1="140" y1="16" x2="140" y2="284"/><line x1="230" y1="16" x2="230" y2="284"/><line x1="320" y1="16" x2="320" y2="284"/><line x1="410" y1="16" x2="410" y2="284"/><line x1="500" y1="16" x2="500" y2="284"/></g>
+    <g font-family="Inter,Arial,sans-serif" font-size="10" fill="#9AA5A1"><text x="132" y="14">04:00</text><text x="222" y="14">05:00</text><text x="312" y="14">06:00</text><text x="402" y="14">07:00</text></g>
+    <g rx="4">
+      <rect x="142" y="26" width="52" height="20" rx="4" fill="#18A0A5"/><rect x="204" y="26" width="52" height="20" rx="4" fill="#18A0A5"/><rect x="266" y="26" width="52" height="20" rx="4" fill="#18A0A5"/>
+      <rect x="172" y="76" width="52" height="20" rx="4" fill="#18A0A5"/><rect x="234" y="76" width="52" height="20" rx="4" fill="#18A0A5"/>
+      <rect x="196" y="126" width="40" height="20" rx="4" fill="#9CD3D5"/><rect x="258" y="126" width="40" height="20" rx="4" fill="#9CD3D5"/><rect x="320" y="126" width="40" height="20" rx="4" fill="#9CD3D5"/>
+      <rect x="238" y="176" width="46" height="20" rx="4" fill="#124737"/><rect x="300" y="176" width="46" height="20" rx="4" fill="#124737"/><rect x="362" y="176" width="46" height="20" rx="4" fill="#124737"/>
+      <rect x="290" y="226" width="90" height="20" rx="4" fill="#F5A53E"/><rect x="386" y="226" width="90" height="20" rx="4" fill="#F5A53E"/>
+      <rect x="352" y="272" width="90" height="16" rx="4" fill="#F5A53E"/>
+    </g>
+    <g stroke="#124737" stroke-width="1.5" stroke-dasharray="3 3" fill="none"><path d="M194 36 L172 36 L172 76"/><path d="M256 36 L234 36 L234 76"/><path d="M286 86 L300 86 L300 176"/><path d="M346 186 L352 186 L352 272"/></g>
+  </svg>
+</div></div>
+
+<section id="nutzen"><div class="wrap">
+  <h2>Was PlanBack bringt</h2>
+  <p class="lead">Konsolidierung, Filialübernahmen und wachsende Sortimente machen die Planung komplexer. PlanBack bringt Struktur hinein, ohne die Erfahrung Ihrer Planer zu ersetzen.</p>
+  <div class="grid">
+    <div class="card"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18A0A5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><h3>Gleichbleibende Qualität</h3><p>Teigruhe, Gare und Backzeiten werden als feste Zeitfenster eingeplant, nicht als Hoffnung. Der Plan hält die Prozesszeiten ein, die Ihr Produkt braucht.</p></div>
+    <div class="card"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18A0A5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3>Prozesszeiten im Griff</h3><p>Maximale Durchlaufzeiten, Rüstzeiten zwischen Produkten und Wartungsfenster fließen in die Terminierung ein. Frische wird planbar.</p></div>
+    <div class="card"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18A0A5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h3>Gezielter Personaleinsatz</h3><p>Schichtpläne und Ressourcen werden gemeinsam betrachtet. Sie sehen, wo Personal wirklich gebraucht wird, und wo der Plan Luft hat.</p></div>
+    <div class="card"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18A0A5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg></div><h3>Auslastung im Blick</h3><p>Kneter, Öfen, Linien und Pufferplätze im Gantt-Diagramm. Engpässe werden sichtbar, bevor sie in der Nachtschicht auffallen.</p></div>
+  </div>
+</div></section>
+
+<section id="ablauf" class="soft"><div class="wrap">
+  <h2>So funktioniert es</h2>
+  <p class="lead">Ein strukturierter Ablauf führt vom offenen Bedarf zum freigegebenen Produktionsplan. Jeder Schritt verfeinert die Daten des vorherigen.</p>
+  <div class="steps">
+    <div class="step"><h3>Bedarfe erfassen</h3><p>Bestellungen und Prognosen für den Planungshorizont zusammenführen, per Import oder direkt in PlanBack.</p></div>
+    <div class="step"><h3>Chargen berechnen</h3><p>Bedarfe werden in produktionsgerechte Teig- und Ofenchargen aufgeteilt.</p></div>
+    <div class="step"><h3>Arbeitspläne zuordnen</h3><p>Jede Charge bekommt den passenden Fertigungsweg über Kneter, Gare, Aufarbeitung und Ofen.</p></div>
+    <div class="step"><h3>Kampagnen priorisieren</h3><p>Reihenfolge und Prioritäten festlegen, bevorzugte Sequenzen und Rüstzeiten berücksichtigen.</p></div>
+    <div class="step"><h3>Optimieren &amp; freigeben</h3><p>Ein Optimierer terminiert alle Vorgänge auf die Ressourcen. Der freigegebene Plan geht an die Produktion, auch mobil auf den Shopfloor.</p></div>
+  </div>
+</div></section>
+
+<section id="fuer-wen"><div class="wrap split">
+  <div>
+    <h2>Für wen PlanBack gemacht ist</h2>
+    <p class="lead">PlanBack richtet sich an Großbäckereien mit vielen Filialen, in denen mehrere Produktbereiche parallel geplant werden.</p>
+    <ul>
+      <li><strong>Planungsbereiche</strong> wie Brot, Brötchen oder Konditorei werden getrennt geplant und bleiben trotzdem in einem System.</li>
+      <li><strong>Feinplanung und Grobplanung</strong> in einer Oberfläche, mit Schichtplan, Kampagnenfolgen und aktivem Plan.</li>
+      <li><strong>Betrieb bei Ihnen im Haus</strong> (On-Premise), Anbindung an bestehende Systeme per CSV-Import und Excel-Export.</li>
+    </ul>
+  </div>
+  <div>
+    <h2>Einführung mit Begleitung</h2>
+    <p class="lead">Eine Planungssoftware ist nur so gut wie ihre Stammdaten. Deshalb starten wir mit einem klar umrissenen Pilotbereich.</p>
+    <ul>
+      <li><strong>Pilot</strong> mit einem Planungsbereich, echten Aufträgen und messbaren Zielen.</li>
+      <li><strong>Rollout</strong> auf weitere Bereiche, sobald der Pilot trägt.</li>
+      <li><strong>Hypercare</strong> nach dem Go-Live, anschließend Wartung und Support mit festen Reaktionszeiten.</li>
+    </ul>
+  </div>
+</div></section>
+
+<section id="kontakt" class="contact"><div class="wrap">
+  <h2>Lernen Sie PlanBack kennen</h2>
+  <p class="lead">Sie planen die Produktion einer Großbäckerei und möchten sehen, wie PlanBack mit Ihren Daten umgeht? Wir zeigen es Ihnen in einem Gespräch, gern mit einem Ihrer echten Planungstage.</p>
+  <p>E-Mail: <span class="todo">[kontakt@planback.de]</span></p>
+</div></section>
+
+</main>
+<footer><div class="bar">
+  <span>© 2026 <span class="todo">[Anbieter]</span> · PlanBack</span>
+  <nav><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a></nav>
+</div></footer>
+</body>
+</html>

@@ -1,0 +1,189 @@
+name: Deploy
+
+# ============================================================================
+# Statische Seite per rsync auf den Prod-Server.
+# ----------------------------------------------------------------------------
+# Kein Docker, kein Compose, kein "caddy reload": Caddy liefert diese Dateien
+# aus einem read-only Bind-Mount (/srv/sites/planback), neue Dateien wirken
+# sofort.
+#
+# Der Ziel-User "deploy" ist unprivilegiert und NICHT in der docker-Gruppe --
+# anders als der App-Deploy-User "github", der ueber die Docker-Gruppe faktisch
+# root ist. Wer diesen Key erbeutet, kann statische Dateien austauschen und
+# sonst nichts.
+#
+# ----------------------------------------------------------------------------
+# WANN DEPLOYT WIRD -- und warum das trotzdem eine bewusste Entscheidung ist
+# ----------------------------------------------------------------------------
+# Merge nach main => Deploy. Das klingt nach "jeder Tippfehler geht live" und
+# ist es nicht, weil main durch Branch Protection nur ueber einen Pull Request
+# erreichbar ist: Der Merge IST der Veroeffentlichungsbeschluss. Ein direkter
+# Push auf main gibt es nicht, also auch keinen unbeabsichtigten Deploy.
+#
+# Damit das traegt, MUSS die Branch Protection stehen (s. README). Ohne sie
+# waere dieser Trigger genau das, wonach er aussieht.
+#
+# workflow_dispatch bleibt zusaetzlich -- fuer den Fall "Server neu aufgesetzt,
+# Dateien noch einmal ausspielen" ohne inhaltliche Aenderung.
+#
+# ----------------------------------------------------------------------------
+# WER AUSLOESEN KANN -- die Sperre liegt NICHT in dieser Datei
+# ----------------------------------------------------------------------------
+# Das Repo ist privat; ohne Zugriff geht ohnehin nichts. Aber auch fuer
+# Mitarbeitende gilt:
+#
+# Jemand mit Schreibrecht koennte einen Branch mit veraendertem Workflow
+# pushen (anderes rsync-Ziel, oder den Key ausgeben) und den Dispatch von
+# DIESEM Branch starten. Eine Pruefung in dieser Datei hilft dagegen NICHT:
+# Sie laege auf demselben Branch und waere mitgeaendert.
+#
+# Wirksam ist allein die Environment-Regel, weil GitHub sie serverseitig
+# durchsetzt -- ausserhalb des Repo-Inhalts:
+#   Settings -> Environments -> production
+#     * Deployment branches: "Selected branches" -> nur  main
+#     * Secrets DEPLOY_HOST / DEPLOY_USER / DEPLOY_SSH_KEY als
+#       ENVIRONMENT-Secrets, nicht als Repository-Secrets
+#
+# Ein Dispatch von einem Feature-Branch erreicht das Environment damit nicht;
+# der manipulierte Workflow laeuft ohne jeden Zugang ins Leere.
+#
+# Die Ref-Pruefung unten ist NUR Bequemlichkeit (klare Fehlermeldung statt
+# stillem Scheitern am Environment-Gate). Sie ist keine Sicherheitsgrenze.
+# ============================================================================
+
+on:
+  push:
+    branches: [main]
+    # Nur wenn sich am Ausgelieferten etwas aendert. Ein Commit, der bloss die
+    # README anfasst, muss den Server nicht behelligen.
+    paths:
+      - 'site/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+# cancel-in-progress bewusst FALSE: Ein abgebrochener rsync hinterlaesst eine
+# halb aktualisierte Seite. Zwei schnell aufeinanderfolgende Merges sollen
+# sich anstellen, nicht einander abwuergen.
+concurrency:
+  group: deploy-planback-web
+  cancel-in-progress: false
+
+# Der GITHUB_TOKEN braucht hier nichts ausser Lesen. Explizit, damit ein
+# spaeter grosszuegiger Repo-Default nicht still durchschlaegt.
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Traegt die Schutzregeln UND die Secrets (s. Kopf).
+    environment: production
+    steps:
+      - name: Nur von main deployen
+        # Bequemlichkeit, keine Sicherheitsgrenze -- die liegt im Environment.
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "::error::Deploy nur von main. Angefordert von '${{ github.ref }}'."
+          exit 1
+
+      - uses: actions/checkout@v4
+
+      - name: SSH-Key bereitstellen und pruefen
+        run: |
+          mkdir -p ~/.ssh
+          # tr -d '\r': Wurde der Schluessel unter Windows oder ueber die
+          # Zwischenablage eingefuegt, tragen die Zeilen CRLF. OpenSSH lehnt
+          # den Schluessel dann ab -- und das sieht im Log exakt so aus wie ein
+          # falscher Schluessel, naemlich nach Rueckfall auf Passwort.
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" | tr -d '\r' > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+          # Laesst sich der Schluessel ueberhaupt lesen? Faengt den haeufigsten
+          # Fehler ab: im Secret steckt der PUBLIC key, ein abgeschnittener
+          # Schluessel oder einer mit Passphrase. Ohne diese Pruefung meldet
+          # erst rsync "Permission denied" -- und sieht dann aus, als laege es
+          # am Zielpfad.
+          # -P '' erzwingt "keine Passphrase", statt danach zu fragen. Ohne das
+          # blockiert ssh-keygen bei einem passphrase-geschuetzten Schluessel auf
+          # einer Eingabe, die im Runner niemand macht.
+          if ! ssh-keygen -y -P '' -f ~/.ssh/id_ed25519 >/dev/null 2>/tmp/key.err; then
+            echo "::error::DEPLOY_SSH_KEY ist kein verwendbarer privater Schluessel."
+            echo ""
+            echo "  WICHTIG: GitHub zeigt einen gespeicherten Secret-Wert nie wieder"
+            echo "  an. Die lokale Schluesseldatei zu pruefen sagt daher nichts"
+            echo "  darueber aus, was hier tatsaechlich ankommt. Die Form dessen,"
+            echo "  was ankommt, steht unten -- der Inhalt wird nicht ausgegeben."
+            echo ""
+            echo "  --- Form des empfangenen Werts ---"
+            echo "  Bytes:  $(wc -c < ~/.ssh/id_ed25519)"
+            echo "  Zeilen: $(wc -l < ~/.ssh/id_ed25519)"
+            echo "  Erste Zeile: $(head -1 ~/.ssh/id_ed25519)"
+            echo "  Letzte Zeile: $(tail -1 ~/.ssh/id_ed25519)"
+            echo ""
+            echo "  So liest sich das:"
+            echo "   * 1 Zeile / ~1 Byte  -> Secret ist LEER. Name exakt"
+            echo "     'DEPLOY_SSH_KEY'? Im richtigen Environment angelegt?"
+            echo "   * Erste Zeile leer   -> beim Einfuegen eine Leerzeile davor."
+            echo "   * Letzte Zeile ist nicht '-----END OPENSSH PRIVATE KEY-----'"
+            echo "     -> Schlusszeile fehlt, Wert abgeschnitten."
+            echo "   * Nur 2-3 Zeilen, aber viele Bytes -> Zeilenumbrueche beim"
+            echo "     Kopieren verlorengegangen (typisch aus einem Terminal)."
+            echo "   * Form sieht richtig aus -> dann hat der Schluessel eine"
+            echo "     PASSPHRASE. Neu erzeugen mit  ssh-keygen ... -N ''"
+            echo ""
+            echo "  --- ssh-keygen ---"; cat /tmp/key.err
+            exit 1
+          fi
+
+      - name: SSH-Verbindung pruefen (rsync --dry-run)
+        # Abweichung von redumio-web: dort wird mit `ssh ... 'echo verbunden'`
+        # geprueft. Das scheitert, sobald der Key wie in der README auf
+        # command="rrsync /srv/sites" eingeschraenkt ist -- rrsync laesst nur
+        # rsync durch und weist ein echo mit Exit 1 ab, obwohl der Login in
+        # Ordnung war. Ein rsync --dry-run prueft dagegen genau den Weg, den
+        # der Deploy nimmt: Schluessel, Login UND ob rrsync den Zielpfad
+        # freigibt. Es wird nichts geschrieben.
+        #
+        # BatchMode: ohne das faellt ssh auf Passwort-Eingabe zurueck und
+        # meldet zweimal "Permission denied, please try again" -- eine
+        # Fehlermeldung, die den Schluessel gar nicht erwaehnt.
+        run: |
+          if ! rsync --dry-run -rz \
+                   -e "ssh -i ~/.ssh/id_ed25519 -o BatchMode=yes -o IdentitiesOnly=yes -o ConnectTimeout=10" \
+                   site/index.html \
+                   "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/srv/sites/planback/" 2>/tmp/ssh.err; then
+            echo "::error::SSH/rsync-Probe fehlgeschlagen. Pruefen, in dieser Reihenfolge:"
+            echo "  1. Steht der PUBLIC key in /home/<user>/.ssh/authorized_keys?"
+            echo "  2. Rechte: /home/<user>/.ssh = 700, authorized_keys = 600,"
+            echo "     beides dem User gehoerend (sshd ignoriert die Datei sonst"
+            echo "     kommentarlos)."
+            echo "  3. Stimmt DEPLOY_USER? (Website-User ist 'deploy', nicht 'planback')"
+            echo "  4. Steht unten 'rrsync error' oder 'rsync: ... failed: Permission"
+            echo "     denied'? Dann war der Login OK und es liegt am Ziel:"
+            echo "     command=\"rrsync /srv/sites\" in authorized_keys und"
+            echo "     /srv/sites/planback muss existieren und dem User gehoeren."
+            echo "  Auf dem Server steht der Grund im Klartext:"
+            echo "     sudo journalctl -u ssh -n 50 --no-pager"
+            echo "--- Fingerabdruck des hier verwendeten Schluessels ---"
+            ssh-keygen -lf ~/.ssh/id_ed25519 || true
+            echo "  Auf dem Server vergleichen mit:"
+            echo "     sudo ssh-keygen -lf /home/<user>/.ssh/authorized_keys"
+            echo "  Unterschiedliche Fingerabdruecke = falsches Schluesselpaar."
+            echo "--- ssh/rsync-Ausgabe ---"; cat /tmp/ssh.err
+            exit 1
+          fi
+
+      - name: Auslieferbares pruefen
+        run: |
+          test -f site/index.html || { echo "site/index.html fehlt"; exit 1; }
+          echo "Groesse: $(du -sh site | cut -f1)"
+
+      # --delete ist Absicht: ohne das bliebe eine im Repo geloeschte Datei auf
+      # dem Server fuer immer erreichbar.
+      - name: Rsync nach /srv/sites/planback
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/id_ed25519 -o BatchMode=yes -o IdentitiesOnly=yes" \
+            site/ \
+            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/srv/sites/planback/"
