@@ -24,15 +24,16 @@ Die Unterseiten liegen als `<name>/index.html`, damit die URLs ohne `.html`
 funktionieren: Der Website-Block im Caddyfile hat kein `try_files`, ein
 `impressum.html` wäre nur unter genau diesem Namen erreichbar.
 
-**Rechtstexte sind Rohbau:** oben ein gelber Entwurfshinweis, offene Angaben
-als `<span class="todo">[...]</span>` markiert, `<meta name="robots"
-content="noindex">` bis zur geprüften Fassung. Beim Ersetzen durch die
-geprüften Texte: Hinweis-Absatz (`.draft`), alle `.todo`-Spans und das
-`noindex` entfernen, `Stand:` nachziehen.
+**Rechtstexte:** Impressum und Datenschutzerklärung tragen die Angaben der
+flogics GmbH (Stand 2026-09-29) und bleiben mit `<meta name="robots"
+content="noindex">`, weil sie nicht in Suchergebnissen auftauchen müssen; die
+Startseite ist indexierbar. Für künftige Rohbau-Texte gilt das alte Muster:
+gelber Entwurfshinweis (`.draft`), offene Angaben als `<span class="todo">[...]
+</span>`, beides vor dem Merge entfernen und `Stand:` nachziehen.
 
-**Offen auf der Startseite** (ebenfalls `.todo`): Kontakt-E-Mail und
-Anbietername im Footer. Beides muss vor dem ersten Merge nach `main`
-eingetragen sein, sonst geht es genau so live.
+Die Adressen `kontakt@planback.de` und `datenschutz@planback.de` stehen auf
+allen Seiten. Sie müssen als Postfach oder Weiterleitung existieren, bevor der
+Stand live geht.
 
 Gemeinsames Stylesheet: `site/assets/page.css`. Farben nach
 `docs/CORPORATE_DESIGN.md` im Repo `planback` (Forest Green `#124737`,
