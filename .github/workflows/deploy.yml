@@ -152,7 +152,7 @@ jobs:
           if ! rsync --dry-run -rz \
                    -e "ssh -i ~/.ssh/id_ed25519 -o BatchMode=yes -o IdentitiesOnly=yes -o ConnectTimeout=10" \
                    site/index.html \
-                   "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/srv/sites/planback/" 2>/tmp/ssh.err; then
+                   "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:planback/" 2>/tmp/ssh.err; then
             echo "::error::SSH/rsync-Probe fehlgeschlagen. Pruefen, in dieser Reihenfolge:"
             echo "  1. Steht der PUBLIC key in /home/<user>/.ssh/authorized_keys?"
             echo "  2. Rechte: /home/<user>/.ssh = 700, authorized_keys = 600,"
@@ -181,9 +181,15 @@ jobs:
 
       # --delete ist Absicht: ohne das bliebe eine im Repo geloeschte Datei auf
       # dem Server fuer immer erreichbar.
+      #
+      # Ziel "planback/" ist RELATIV: der Key ist per command="rrsync /srv/sites"
+      # eingeschraenkt, und rrsync haengt jeden Zielpfad an dieses Verzeichnis
+      # an, auch einen absoluten (aus "/srv/sites/planback/" wuerde
+      # /srv/sites/srv/sites/planback, und der Lauf scheitert mit "mkdir ...
+      # failed: No such file or directory"). Effektives Ziel: /srv/sites/planback.
       - name: Rsync nach /srv/sites/planback
         run: |
           rsync -avz --delete \
             -e "ssh -i ~/.ssh/id_ed25519 -o BatchMode=yes -o IdentitiesOnly=yes" \
             site/ \
-            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/srv/sites/planback/"
+            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:planback/"
