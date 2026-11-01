@@ -66,6 +66,10 @@ jobs:
     name: Fable Review
     if: github.event.pull_request.draft == false && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
+    # --max-turns bounds turns, not wall-clock time. A hung tool call would
+    # otherwise hold the runner for GitHub's default of 360 minutes. planback
+    # reviews finish in 3 to 9 minutes.
+    timeout-minutes: 30
     steps:
       # Skip cleanly while the secret is not set up yet instead of failing the
       # check. Secrets cannot be tested in a job-level `if`, so a step does it.
@@ -122,16 +126,21 @@ jobs:
 
             2. Page layout contract: sub pages live as `<name>/index.html` so
                URLs work without `.html` (the Caddy block has no try_files).
-               A new page as `<name>.html`, a link to a path that does not
-               exist under `site/`, or a missing entry for `404.html` is a
-               finding. Assets are referenced with absolute paths from the
-               site root.
+               A new page as `<name>.html` or a link to a path that does not
+               exist under `site/` is a finding. Deleting or renaming
+               `site/404.html` breaks Caddy's `handle_errors`. Pages reference
+               the stylesheet and images with paths relative to their own
+               location (`assets/...` on the start page, `../assets/...` on sub
+               pages); only `404.html` uses absolute paths, because Caddy
+               serves it under any URL. Do not flag that difference.
 
             3. Privacy and legal texts: `datenschutz/` and `impressum/` carry
                the provider details and must stay `noindex`. Anything that
-               adds an external resource (CDN font, analytics, embedded map,
-               third-party script, external image) contradicts the privacy
-               statement and needs a matching text change. Draft markers
+               LOADS an external resource (CDN font, analytics, embedded map,
+               third-party script, external image, iframe) contradicts the
+               privacy statement and needs a matching text change. A plain
+               hyperlink to another site, such as the EU ODR platform link in
+               the Impressum, is fine. Draft markers
                (`.draft`, `<span class="todo">`) must not survive into a PR
                meant for `main`. The "Stand:" date must be updated when a
                legal text changes.
