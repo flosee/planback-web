@@ -187,9 +187,12 @@ jobs:
       # an, auch einen absoluten (aus "/srv/sites/planback/" wuerde
       # /srv/sites/srv/sites/planback, und der Lauf scheitert mit "mkdir ...
       # failed: No such file or directory"). Effektives Ziel: /srv/sites/planback.
+      # /medien/ holds the video files (README, section "Videos"). They are not
+      # in this repo and come to the server by an upload script, so --delete
+      # must leave them alone: an excluded path is neither copied nor deleted.
       - name: Rsync nach /srv/sites/planback
         run: |
-          rsync -avz --delete \
+          rsync -avz --delete --exclude '/medien/' \
             -e "ssh -i ~/.ssh/id_ed25519 -o BatchMode=yes -o IdentitiesOnly=yes" \
             site/ \
             "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:planback/"
