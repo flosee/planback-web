@@ -1,8 +1,8 @@
-/* Gemeinsames Stylesheet aller Seiten (Startseite, Datenschutz, Impressum).
-   Farben und Schrift nach docs/CORPORATE_DESIGN.md im Repo planback:
-   Forest Green #124737, Process Teal #18A0A5, Bread Gold #F5A53E, Anthrazit #1A1A1A.
-   Inter liegt lokal in site/fonts/ (variable Schrift 400-700) - kein externer
-   Request, keine Cookies. */
+/* Shared stylesheet of all pages (home, module pages, videos, legal pages).
+   Colours and font follow docs/CORPORATE_DESIGN.md in the planback repo:
+   Forest Green #124737, Process Teal #18A0A5, Bread Gold #F5A53E, Anthracite #1A1A1A.
+   Inter is served locally from site/fonts/ (variable font 400-700): no external
+   request, no cookies. */
 @font-face{font-family:'Inter';font-weight:400 700;font-style:normal;font-display:swap;src:url('../fonts/inter-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 @font-face{font-family:'Inter';font-weight:400 700;font-style:normal;font-display:swap;src:url('../fonts/inter-latin-ext.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
 :root{--green:#124737;--green-dark:#0C3226;--teal:#18A0A5;--teal-dark:#158F94;--gold:#F5A53E;--ink:#1A1A1A;--text:#2B3A36;--muted:#5E6B67;--line:#E3E8E6;--bg-soft:#F3F8F6;--teal-soft:#E4F4F5}
@@ -17,6 +17,8 @@ header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdr
 .bar .logo{display:block;line-height:0}
 .bar .logo img{height:40px;width:auto;display:block}
 .bar nav{display:flex;gap:22px;flex-wrap:wrap}
+.bar nav a[aria-current=page]{color:var(--green)}
+.bar nav a[hidden]{display:none}
 .bar nav a{color:var(--muted);font-weight:600;font-size:.95rem;text-decoration:none}
 .bar nav a:hover{color:var(--green)}
 main{max-width:760px;margin:0 auto;padding:56px 24px 72px}
@@ -41,4 +43,62 @@ footer .bar{height:auto;flex-wrap:wrap;gap:12px 28px;font-size:.9rem}
 footer a{color:#DDE6E2;text-decoration:none}
 footer a:hover{color:var(--gold)}
 footer nav{display:flex;gap:20px;flex-wrap:wrap}
+/* ---- Home and module pages ---- */
+main.wide{max-width:none;padding:0}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.hero{background:linear-gradient(180deg,var(--bg-soft) 0%,#fff 100%);padding:64px 0 56px}
+.hero .wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.hero.stacked .wrap{grid-template-columns:1fr}
+.claim{display:inline-block;background:var(--teal-soft);color:var(--green);font-weight:600;font-size:.85rem;padding:6px 14px;border-radius:999px;margin-bottom:18px}
+.hero h1{font-size:2.5rem;margin-bottom:16px}
+.hero p.lead,.lead{font-size:1.12rem;color:var(--muted);max-width:40rem;margin-bottom:24px}
+.actions{display:flex;gap:12px;flex-wrap:wrap}
+.shot{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line);box-shadow:0 12px 40px rgba(18,71,55,.12);background:#fff}
+figure{margin:0}
+figcaption{color:var(--muted);font-size:.88rem;margin-top:10px}
+section{padding:64px 0}
+section.soft{background:var(--bg-soft)}
+section.tight{padding-top:0}
+section h2{font-size:1.75rem;margin:0 0 8px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.grid.three{grid-template-columns:repeat(3,1fr)}
+.grid.two{grid-template-columns:repeat(2,1fr)}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;display:flex;flex-direction:column}
+.card h3{margin:0 0 6px;font-size:1.05rem}
+.card p{margin:0;font-size:.95rem}
+.card .more{margin-top:14px;font-weight:600;font-size:.95rem;text-decoration:none}
+.card .step{color:var(--teal-dark);font-weight:700;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+a.card{text-decoration:none;color:inherit;transition:border-color .15s,box-shadow .15s}
+a.card:hover{border-color:var(--teal);box-shadow:0 6px 20px rgba(18,71,55,.08)}
+a.card:hover h3{color:var(--teal-dark)}
+.ico{width:40px;height:40px;border-radius:10px;background:var(--teal-soft);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.split.media{grid-template-columns:1.25fr 1fr;align-items:center}
+.split.phone{grid-template-columns:1fr 340px;align-items:center}
+.dots{list-style:none;padding:0}
+.dots li{padding:10px 0 10px 30px;border-bottom:1px solid var(--line);position:relative;margin:0}
+.dots li::before{content:"";position:absolute;left:4px;top:17px;width:12px;height:12px;border-radius:50%;background:var(--gold)}
+.problem{max-width:46rem;margin-bottom:28px}
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.role{border-radius:14px;padding:24px;border:1px solid var(--line);background:#fff}
+.role h3{margin:0 0 10px}
+.role.you{border-color:var(--gold);background:#FFF9EF}
+.role ul{margin:0;padding-left:1.2em}
+.role li{margin-bottom:6px}
+.next{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:32px;font-weight:600}
+.next a{text-decoration:none}
+.video-slot[hidden]{display:none}
+.video-slot video{display:block;width:100%;height:auto;border-radius:12px;background:var(--ink)}
+.video-slot{margin-top:32px}
+.videos .video-slot{margin:0 0 40px}
+.videos .video-slot h2{font-size:1.35rem}
+.contact{background:var(--green);color:#fff}
+.contact h2,.contact p{color:#fff}
+.contact .lead{color:#CFE3DB}
+.contact .btn{background:var(--gold);color:var(--ink)}
+.contact .btn:hover{background:#F7B45C;color:var(--ink)}
+.contact a.mail{color:#fff;font-weight:600}
+.contact .alt{margin-top:18px}
+@media (max-width:900px){.hero .wrap,.split,.split.media,.split.phone,.roles{grid-template-columns:1fr}.grid,.grid.three{grid-template-columns:1fr 1fr}.split.phone figure{max-width:340px}}
+@media (max-width:560px){.hero{padding:44px 0 36px}.hero h1{font-size:1.9rem}.grid,.grid.three,.grid.two{grid-template-columns:1fr}section{padding:48px 0}.wrap{padding:0 16px}}
 @media (max-width:560px){h1{font-size:1.6rem}.bar{height:auto;padding:14px 16px}.bar .logo img{height:34px}.bar nav{gap:14px}.bar nav a{font-size:.9rem}main{padding:40px 16px 56px}}

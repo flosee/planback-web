@@ -1,7 +1,7 @@
 # planback-web
 
-Statische Website von PlanBack (`planback`): Startseite, Datenschutz,
-Impressum. **Privates Repo.**
+Statische Website von PlanBack (`planback`): Startseite, vier Modulseiten,
+Videoseite, Datenschutz, Impressum. **Privates Repo.**
 
 Kein Build. `site/` ist genau das, was ausgeliefert wird. Ausgeliefert wird
 per rsync nach `/srv/sites/planback` auf den Server; dort bedient der Caddy
@@ -15,7 +15,12 @@ Mechanismus und Workflow sind 1:1 von `redumio-web` übernommen; nur Ziel
 
 | Pfad | Datei | Zweck |
 |---|---|---|
-| `/` | `site/index.html` | Startseite: Nutzen, Ablauf (Bedarfe → Chargen → Arbeitspläne → Kampagnen → Optimieren & freigeben), Zielgruppe, Kontakt. Texte aus `docs/BUSINESS_PLAN_PlanBack.md` und dem Handbuch-Kapitel „Einführung" |
+| `/` | `site/index.html` | Startseite: Nutzen für den Planer, der Weg eines Plans über die vier Module, Zielgruppe, Einführung, Kontakt. Platz für das Überblicksvideo |
+| `/prognose/` | `site/prognose/index.html` | Modul Prognose |
+| `/grobplanung/` | `site/grobplanung/index.html` | Modul Grobplanung |
+| `/feinplanung/` | `site/feinplanung/index.html` | Modul Feinplanung |
+| `/backstube/` | `site/backstube/index.html` | Mobile Anlagenansicht in der Backstube |
+| `/videos/` | `site/videos/index.html` | Alle Videos. `noindex` und nicht im Menü, solange es kein Überblicksvideo gibt (siehe „Videos“) |
 | `/datenschutz/` | `site/datenschutz/index.html` | Datenschutzerklärung für die Website (nur Server-Logs, keine Cookies, keine externen Dienste) |
 | `/impressum/` | `site/impressum/index.html` | Anbieterkennzeichnung |
 | `/404.html` | `site/404.html` | Fehlerseite, die Caddy über `handle_errors` ausliefert |
@@ -41,6 +46,50 @@ Process Teal `#18A0A5`, Bread Gold `#F5A53E`). Schrift Inter als variable
 Schrift lokal aus `site/fonts/` (Google Fonts, SIL Open Font License), kein
 externer Request, keine Cookies. Logos in `site/assets/logo/` stammen aus
 `frontend/public/` im Repo `planback`.
+
+## Leitlinien für die Texte
+
+- PlanBack ist ein Entscheidungsunterstützungssystem. Jede Seite sagt, was
+  PlanBack rechnet und was der Planer entscheidet (Kasten „PlanBack rechnet“ /
+  „Ihr Planer entscheidet“ auf den Modulseiten). Nie der Eindruck, der Planer
+  werde nicht mehr gebraucht.
+- Keine Prozentversprechen, keine Zahlen vom Pilotkunden. Belegt wird nur,
+  was die Anwendung selbst zeigt.
+- Ansprache mit „Sie“, sachlich-kollegial. Zielgruppe: Großbäckereien mit
+  vielen Filialen im deutschsprachigen Raum.
+- Keine Aussage zur Betriebsform (On-Premise oder gehostet) auf den
+  Werbeseiten (Entscheidung 2026-11-25). Die Datenschutzerklärung bleibt davon
+  unberührt.
+- Nur Funktionen nennen, die es im Produkt gibt. Geplantes kommt erst auf die
+  Seite, wenn es ausgeliefert ist.
+
+## Bilder
+
+Die Screenshots in `site/assets/bilder/` stammen aus der echten Anwendung,
+lokal gestartet mit erfundenen Daten: der E2E-Seed mit umbenannten Produkten
+(Bauernlaib, Dinkel-Urkornbrot, Kastenbrot, Vinschgerl, Weizenbrötchen) für
+Feinplanung, Grobplanung und Backstube, die simulierte Musterbäckerei aus
+`docs/prognose-demo` für die Prognose. Keine Kundendaten. WebP, 1600 px breit
+(Smartphone 780 px), aufgenommen mit doppelter Pixeldichte.
+`vorschau.jpg` (1200 × 630) ist das Vorschaubild für geteilte Links.
+
+## Videos
+
+Die Videodateien liegen nicht im Repo, sondern auf dem Server unter
+`/srv/sites/planback/medien/videos/` (Konzept `docs/CONCEPT_Marketing_Videos.md`
+im Repo `planback`, V14 und V20). Der Deploy-Workflow schließt `/medien/` beim
+rsync aus, damit `--delete` die Dateien nicht entfernt.
+
+Je Video drei Dateien mit gleichem Namen: `<name>.mp4` (H.264), `<name>.jpg`
+(Vorschaubild), `<name>.vtt` (deutsche Untertitel). Namen: `ueberblick`,
+`feinplanung`, `grobplanung`, `prognose`, `backstube`, `einrichtung`.
+
+`site/assets/site.js` fragt beim Laden per `HEAD` nach `<name>.mp4` und zeigt
+den Player erst, wenn die Datei da ist. Ein neues Video braucht also keine
+Änderung am HTML: Datei hochladen, fertig. Sobald `ueberblick.mp4` existiert,
+erscheint auch der Menüpunkt „Videos“. Dann `noindex` in
+`site/videos/index.html` entfernen. Alles bleibt auf planback.de, keine
+Einbettung von Dritten.
 
 ## Freischalten der Domain
 

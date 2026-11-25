@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Videos — PlanBack</title>
+<meta name="description" content="Videos zu PlanBack: Überblick, Feinplanung, Grobplanung, Prognose, Backstube und Einrichtung.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Videos — PlanBack">
+<meta property="og:description" content="Videos zu PlanBack: Überblick, Feinplanung, Grobplanung, Prognose, Backstube und Einrichtung.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://planback.de/assets/bilder/vorschau.jpg">
+<link rel="icon" type="image/png" href="/assets/logo/icon.png">
+<link rel="stylesheet" href="/assets/page.css">
+<script src="/assets/site.js" defer></script>
+</head>
+<body>
+<header><div class="bar">
+  <a class="logo" href="/" aria-label="PlanBack, zur Startseite"><img src="/assets/logo/planback.png" alt="PlanBack — Pläne, die aufgehen" width="959" height="308"></a>
+  <nav aria-label="Hauptmenü"><a href="/feinplanung/">Feinplanung</a><a href="/grobplanung/">Grobplanung</a><a href="/prognose/">Prognose</a><a href="/backstube/">Backstube</a><a href="/videos/" data-video-link hidden aria-current="page">Videos</a><a href="/#kontakt">Kontakt</a></nav>
+</div></header>
+<main class="wide">
+<div class="hero"><div class="wrap">
+  <div>
+    <span class="claim">Videos</span>
+    <h1>PlanBack im Video</h1>
+    <p class="lead">Kurze Rundgänge durch die Module, aufgenommen in der echten Anwendung mit einer erfundenen Beispielbäckerei.</p>
+  </div>
+</div></div>
+<section><div class="wrap videos">
+  <p id="noch-keine" class="lead">Die Videos entstehen gerade. Bis dahin zeigen wir Ihnen PlanBack gern in einem Gespräch.</p>
+  <article class="video-slot" data-video="ueberblick" data-title="PlanBack im Überblick" hidden>
+    <h2>PlanBack im Überblick</h2><p>Der Weg eines Plans: von der Prognose über Wochen- und Tagesplan bis an die Anlage.</p><div class="player"></div>
+  </article>
+  <article class="video-slot" data-video="feinplanung" data-title="Feinplanung" hidden>
+    <h2>Feinplanung</h2><p>Wie aus den Bedarfen des Tages ein minutengenauer Plan für Kneter, Gärkammern und Öfen wird.</p><div class="player"></div>
+  </article>
+  <article class="video-slot" data-video="grobplanung" data-title="Grobplanung" hidden>
+    <h2>Grobplanung</h2><p>Die Woche gegen die Kapazität planen und Engpässe früh sehen.</p><div class="player"></div>
+  </article>
+  <article class="video-slot" data-video="prognose" data-title="Prognose" hidden>
+    <h2>Prognose</h2><p>Bestellungen vorhersagen und nachvollziehen, warum die Zahl so ist.</p><div class="player"></div>
+  </article>
+  <article class="video-slot" data-video="backstube" data-title="Backstube" hidden>
+    <h2>Backstube</h2><p>Der Plan an der Anlage: was läuft, was als Nächstes kommt.</p><div class="player"></div>
+  </article>
+  <article class="video-slot" data-video="einrichtung" data-title="Einrichtung" hidden>
+    <h2>Einrichtung</h2><p>Stammdaten, Arbeitspläne und Regeln einmal sauber einrichten.</p><div class="player"></div>
+  </article>
+</div></section>
+<script>
+document.addEventListener('planback:video', function () {
+  var hint = document.getElementById('noch-keine');
+  if (hint) { hint.hidden = true; }
+});
+</script>
+
+<section id="kontakt" class="contact"><div class="wrap">
+  <h2>Lernen Sie PlanBack kennen</h2>
+  <p class="lead">Sie planen die Produktion einer Großbäckerei und möchten sehen, wie PlanBack mit Ihren Daten umgeht? Wir zeigen es Ihnen in einem Gespräch, gern an einem Ihrer echten Planungstage.</p>
+  <div class="actions"><a class="btn" href="mailto:kontakt@planback.de?subject=Gespr%C3%A4ch%20%C3%BCber%20PlanBack">Gespräch vereinbaren</a></div>
+  <p class="alt">Oder schreiben Sie direkt an <a class="mail" href="mailto:kontakt@planback.de">kontakt@planback.de</a>.</p>
+</div></section>
+</main>
+<footer><div class="bar">
+  <span>© 2026 flogics GmbH · PlanBack</span>
+  <nav><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a></nav>
+</div></footer>
+</body>
+</html>
